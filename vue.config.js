@@ -33,16 +33,16 @@ module.exports = {
     port: port,
     open: true,
     //如果你的前端应用和后端 API 服务器没有运行在同一个主机上，你需要在开发环境下将 API 请求代理到 API 服务器。
-    /*proxy: {
+    proxy: {
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://localhost:8080`,
+        target: `http://localhost:9090`,
         changeOrigin: true,
         //发送请求时，请求路径重写：将 /api/xxx --> /xxx （去掉/api）
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
       }
-    },*/
+    },
     overlay: {
       warnings: false,
       errors: true
