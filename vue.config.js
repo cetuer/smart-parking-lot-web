@@ -49,7 +49,6 @@ module.exports = {
     },
     //关闭域名检查
     disableHostCheck: true,
-    before: require('./mock/mock-server.js')
   },
   configureWebpack: {
     name: name,
@@ -116,8 +115,7 @@ module.exports = {
               }
             })
           // https:// webpack.js.org/configuration/optimization/#optimizationruntimechunk
-          config.optimization.runtimeChunk('single'),
-          {
+          config.optimization.runtimeChunk('single'), {
             from: path.resolve(__dirname, './public/robots.txt'), //防爬虫文件
             to: './', //到根目录下
           }
