@@ -28,7 +28,7 @@ const user = {
   },
   actions: {
     // 登录
-    login({ commit }, userInfo) {
+    Login({ commit }, userInfo) {
       const { username, password } = userInfo
       return new Promise((resolve, reject) => {
         login({ username: username.trim(), password: password }).then(response => {
@@ -42,7 +42,7 @@ const user = {
       })
     },
     // 获取用户信息
-    getInfo({ commit, state }) {
+    GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
           const { data } = response
@@ -65,7 +65,7 @@ const user = {
       })
     },
     // 退出系统
-    logout({ commit, state }) {
+    Logout({ commit, state }) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           removeToken() // must remove  token  first
@@ -79,7 +79,7 @@ const user = {
       })
     },
     // remove token
-    resetToken({ commit }) {
+    ResetToken({ commit }) {
       return new Promise(resolve => {
         removeToken() // must remove  token  first
         commit('RESET_STATE')

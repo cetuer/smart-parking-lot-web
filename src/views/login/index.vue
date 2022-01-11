@@ -73,7 +73,7 @@ export default {
       codeUrl: "",
       loginForm: {
         username: "admin",
-        password: "admin123",
+        password: "admin",
         rememberMe: false,
         code: "",
         uuid: "",
@@ -104,7 +104,9 @@ export default {
     },
   },
   created() {
-    //this.getCode();
+    if (this.captchaOnOff) {
+      this.getCode();
+    }
     this.getCookie();
   },
   methods: {

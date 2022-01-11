@@ -7,7 +7,8 @@ import { getToken } from '@/utils/auth' // get token from cookie
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login'] // no redirect whitelist
+//免登录白名单
+const whiteList = ['/login']
 let flag = true
 
 router.beforeEach((to, from, next) => {
