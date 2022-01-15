@@ -52,19 +52,18 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
-
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.status === 50008 || res.status === 50012 || res.status === 50014) {
-        // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
+      if (code === 401) {
+        MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
+            confirmButtonText: '重新登录',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        ).then(() => {
+          store.dispatch('LogOut').then(() => {
+            location.href = '/login';
           })
-        })
+        }).catch(() => {});
+        return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
       }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {

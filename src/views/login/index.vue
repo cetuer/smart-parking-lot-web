@@ -62,9 +62,9 @@
 </template>
 
 <script>
-// import { getCodeImg } from "@/api/login";
+import { getCodeImg } from "@/api/user";
 import Cookies from "js-cookie";
-// import { encrypt, decrypt } from "@/utils/jsencrypt";
+import { encrypt, decrypt } from "@/utils/jsencrypt";
 
 export default {
   name: "Login",
@@ -72,24 +72,26 @@ export default {
     return {
       codeUrl: "",
       loginForm: {
-        username: "admin",
-        password: "admin",
+        username: "",
+        password: "",
         rememberMe: false,
         code: "",
-        uuid: "",
+        uuid: ""
       },
       loginRules: {
         username: [
           { required: true, trigger: "blur", message: "请输入您的账号" },
+          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
         ],
         password: [
           { required: true, trigger: "blur", message: "请输入您的密码" },
+          { min: 5, max: 20, message: '长度在 5 到 20 个字符', trigger: 'blur' }
         ],
         code: [{ required: true, trigger: "change", message: "请输入验证码" }],
       },
       loading: false,
       // 验证码开关
-      captchaOnOff: false,
+      captchaOnOff: true,
       // 注册开关
       register: false,
       redirect: undefined,
@@ -112,11 +114,10 @@ export default {
   methods: {
     getCode() {
       getCodeImg().then((res) => {
-        this.captchaOnOff =
-          res.captchaOnOff === undefined ? true : res.captchaOnOff;
+        this.captchaOnOff = res.data.captchaOnOff;
         if (this.captchaOnOff) {
-          this.codeUrl = "data:image/gif;base64," + res.img;
-          this.loginForm.uuid = res.uuid;
+          this.codeUrl = "data:image/png;base64," + res.data.img;
+          this.loginForm.uuid = res.data.uuid;
         }
       });
     },
@@ -126,8 +127,7 @@ export default {
       const rememberMe = Cookies.get("rememberMe");
       this.loginForm = {
         username: username === undefined ? this.loginForm.username : username,
-        password:
-          password === undefined ? this.loginForm.password : decrypt(password),
+        password: password === undefined ? this.loginForm.password : decrypt(password),
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe),
       };
     },
@@ -137,12 +137,8 @@ export default {
           this.loading = true;
           if (this.loginForm.rememberMe) {
             Cookies.set("username", this.loginForm.username, { expires: 30 });
-            Cookies.set("password", encrypt(this.loginForm.password), {
-              expires: 30,
-            });
-            Cookies.set("rememberMe", this.loginForm.rememberMe, {
-              expires: 30,
-            });
+            Cookies.set("password", encrypt(this.loginForm.password), { expires: 30, });
+            Cookies.set("rememberMe", this.loginForm.rememberMe, { expires: 30, });
           } else {
             Cookies.remove("username");
             Cookies.remove("password");

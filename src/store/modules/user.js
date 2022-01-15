@@ -29,9 +29,9 @@ const user = {
   actions: {
     // 登录
     Login({ commit }, userInfo) {
-      const { username, password } = userInfo
+      const { username, password, code, uuid } = userInfo
       return new Promise((resolve, reject) => {
-        login({ username: username.trim(), password: password }).then(response => {
+        login(username.trim(), password, code, uuid).then(response => {
           const { data } = response
           commit('SET_TOKEN', data.token)
           setToken(data.token)
