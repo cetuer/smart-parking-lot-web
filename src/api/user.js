@@ -5,6 +5,9 @@ export function login(username, password, code, uuid) {
     return request({
         url: '/parking-auth/auth/login',
         method: 'post',
+        headers: {
+            isToken: false
+        },
         data: { username, password, code, uuid }
     })
 }
@@ -14,6 +17,9 @@ export function getCodeImg() {
     return request({
         url: '/code',
         method: 'get',
+        headers: {
+            isToken: false
+        },
         timeout: 20000
     })
 }
