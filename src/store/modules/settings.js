@@ -3,6 +3,7 @@ import defaultSettings from '@/settings'
 const { showSettings, fixedHeader, sidebarLogo } = defaultSettings
 
 const state = {
+  title: '',
   showSettings: showSettings,
   fixedHeader: fixedHeader,
   sidebarLogo: sidebarLogo
@@ -21,6 +22,10 @@ const actions = {
   // 修改布局设置
   changeSetting({ commit }, data) {
     commit('CHANGE_SETTING', data)
+  },
+  // 设置网页标题
+  setTitle({ commit }, title) {
+    state.title = title
   }
 }
 

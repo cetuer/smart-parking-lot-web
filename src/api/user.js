@@ -23,3 +23,11 @@ export function getCodeImg() {
         timeout: 20000
     })
 }
+
+// 获取用户信息
+export function getInfo() {
+    return request({
+        url: '/parking-admin/user/getInfo',
+        method: 'get'
+    })
+}
