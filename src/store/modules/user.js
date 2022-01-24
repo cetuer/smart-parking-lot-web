@@ -32,9 +32,8 @@ const user = {
       const { username, password, code, uuid } = userInfo
       return new Promise((resolve, reject) => {
         login(username.trim(), password, code, uuid).then(response => {
-          const { data } = response
-          commit('SET_TOKEN', data.access_token)
-          setToken(data.access_token, data.expires_in)
+          commit('SET_TOKEN', response.access_token)
+          setToken(response.access_token, response.expires_in)
           resolve()
         }).catch(error => {
           reject(error)
@@ -44,21 +43,18 @@ const user = {
     // 获取用户信息
     GetInfo({ commit }) {
       return new Promise((resolve, reject) => {
-        getInfo().then(response => {
-          const { data } = response
-          if (!data) {
-            return reject('Verification failed, please Login again.')
-          }
-          const { name, avatar } = data
-          if (response.roles && response.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', response.roles)
-            commit('SET_PERMISSIONS', response.permissions)
+        getInfo().then(res => {
+          const user = res.user
+          const avatar = user.avatar == "" ? require("@/assets/images/profile.jpg") : user.avatar;
+          if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是一个非空数组
+            commit('SET_ROLES', res.roles)
+            commit('SET_PERMISSIONS', res.permissions)
           } else {
             commit('SET_ROLES', ['ROLE_DEFAULT'])
           }
-          commit('SET_NAME', name)
+          commit('SET_NAME', user.username)
           commit('SET_AVATAR', avatar)
-          resolve(data)
+          resolve(res)
         }).catch(error => {
           reject(error)
         })
