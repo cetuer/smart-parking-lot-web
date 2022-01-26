@@ -31,3 +31,11 @@ export function getInfo() {
         method: 'get'
     })
 }
+
+// 登出
+export function logout() {
+    return request({
+        url: '/parking-auth/auth/logout',
+        method: 'delete'
+    })
+}

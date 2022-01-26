@@ -66,8 +66,8 @@ service.interceptors.response.use(
           type: 'warning'
         }
       ).then(() => {
-        store.dispatch('LogOut').then(() => {
-          location.href = '/index';
+        store.dispatch('WebLogOut').then(() => {
+          location.href = '/';
         })
       }).catch(() => {});
       return Promise.reject('无效的会话，或者会话已过期，请重新登录。')

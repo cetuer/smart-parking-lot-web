@@ -61,24 +61,26 @@ const user = {
       })
     },
     // 退出系统
-    Logout({ commit, state }) {
+    Logout({ commit }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
-          removeToken() // must remove  token  first
+        logout().then(() => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
           commit('SET_PERMISSIONS', [])
+          removeToken()
           resolve()
         }).catch(error => {
           reject(error)
         })
       })
     },
-    // remove token
-    ResetToken({ commit }) {
+    // 前端登出
+    WebLogOut({ commit }) {
       return new Promise(resolve => {
-        removeToken() // must remove  token  first
-        commit('RESET_STATE')
+        commit('SET_TOKEN', '')
+        commit('SET_ROLES', [])
+        commit('SET_PERMISSIONS', [])
+        removeToken()
         resolve()
       })
     }
