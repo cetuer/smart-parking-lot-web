@@ -13,8 +13,8 @@
         mode="vertical"
       >
         <sidebar-item
-          v-for="route in routes"
-          :key="route.path"
+          v-for="(route, index) in sidebarRouters"
+          :key="route.path + index"
           :item="route"
           :base-path="route.path"
         />
@@ -32,10 +32,7 @@ import variables from "@/assets/styles/variables.scss";
 export default {
   components: { SidebarItem, Logo },
   computed: {
-    ...mapGetters(["sidebar"]),
-    routes() {
-      return this.$router.options.routes;
-    },
+    ...mapGetters(["sidebarRouters", "sidebar"]),
     activeMenu() {
       const route = this.$route;
       const { meta, path } = route;

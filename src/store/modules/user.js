@@ -75,7 +75,7 @@ const user = {
       })
     },
     // 前端登出
-    WebLogOut({ commit }) {
+    WebLogout({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])

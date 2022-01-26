@@ -34,7 +34,7 @@ router.beforeEach((to, from, next) => {
             next()
           }
         }).catch(err => {
-          store.dispatch('WebLogOut').then(() => {
+          store.dispatch('WebLogout').then(() => {
             Message.error(err)
             next({ path: '/' })
           })

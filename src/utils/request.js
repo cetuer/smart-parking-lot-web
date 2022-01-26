@@ -66,7 +66,7 @@ service.interceptors.response.use(
           type: 'warning'
         }
       ).then(() => {
-        store.dispatch('WebLogOut').then(() => {
+        store.dispatch('WebLogout').then(() => {
           location.href = '/';
         })
       }).catch(() => {});

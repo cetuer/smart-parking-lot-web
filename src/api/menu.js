@@ -3,7 +3,7 @@ import request from "@/utils/request.js"
 // 获取路由
 export const getRouters = () => {
     return request({
-        url: '/service-menu/menu/getRouters',
+        url: '/parking-admin/menu/getRouters',
         method: 'get'
     })
 }
@@ -11,7 +11,7 @@ export const getRouters = () => {
 //查询菜单列表
 export function listMenu(query) {
     return request({
-        url: '/service-menu/menu/list',
+        url: '/parking-admin/menu/list',
         method: 'get',
         params: query
     })
