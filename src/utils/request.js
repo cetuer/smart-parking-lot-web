@@ -52,14 +52,14 @@ service.interceptors.response.use(
   response => {
     const res = response.data;
     // 未设置状态码则默认成功状态
-    const code = res.status || 2000;
+    const code = res.status || 20000;
     // 获取操作信息
     const msg =  res.message || '系统未知错误';
     // 二进制数据则直接返回
     if(response.request.responseType ===  'blob' || response.request.responseType ===  'arraybuffer'){
       return res.data;
     }
-    if (code === 4001) {
+    if (code === 40311 || code === 40342 || code === 40343) {
       MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
           confirmButtonText: '重新登录',
           cancelButtonText: '取消',
@@ -71,7 +71,7 @@ service.interceptors.response.use(
         })
       }).catch(() => {});
       return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
-    } else if (code !== 2000) {
+    } else if (code !== 20000) {
       Message({
         message: msg,
         type: 'error'
