@@ -58,7 +58,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$store.dispatch('Logout').then(() => {
-          location.href = '/dashboard';
+          location.href = '/';
         })
       }).catch(() => {});
     }

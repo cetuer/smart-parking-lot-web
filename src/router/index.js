@@ -43,11 +43,11 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/index',
     children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: (resolve) => require(['@/views/dashboard/index'], resolve),
+      path: 'index',
+      name: 'Index',
+      component: (resolve) => require(['@/views/index/index'], resolve),
       meta: { title: '首页', icon: 'dashboard' }
     }]
   },
