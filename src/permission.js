@@ -1,11 +1,17 @@
 import router from './router'
 import store from './store'
-import { Message } from 'element-ui'
+import {
+  Message
+} from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth' // get token from cookie
+import {
+  getToken
+} from '@/utils/auth' // get token from cookie
 
-NProgress.configure({ showSpinner: false }) // NProgress Configuration
+NProgress.configure({
+  showSpinner: false
+}) // NProgress Configuration
 
 //免登录白名单
 const whiteList = ['/login']
@@ -17,7 +23,9 @@ router.beforeEach((to, from, next) => {
     to.meta.title && store.dispatch('settings/setTitle', to.meta.title)
     /* has token*/
     if (to.path === '/login') {
-      next({ path: '/' })
+      next({
+        path: '/'
+      })
       NProgress.done()
     } else {
       if (store.getters.roles.length === 0) {
@@ -28,7 +36,10 @@ router.beforeEach((to, from, next) => {
               // 根据roles权限生成可访问的路由表
               router.addRoutes(accessRoutes) // 动态添加可访问路由表
               flag = false
-              next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
+              next({
+                ...to,
+                replace: true
+              }) // hack方法 确保addRoutes已完成
             })
           } else {
             next()
@@ -36,7 +47,9 @@ router.beforeEach((to, from, next) => {
         }).catch(err => {
           store.dispatch('WebLogout').then(() => {
             Message.error(err)
-            next({ path: '/' })
+            next({
+              path: '/'
+            })
           })
         })
       } else {

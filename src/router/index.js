@@ -5,6 +5,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
+import ParentView from '@/components/ParentView'
 
 /**
  * Note: 路由配置项
@@ -44,13 +45,11 @@ export const constantRoutes = [
     component: (resolve) => require(['@/views/login/index'], resolve),
     hidden: true
   },
-
   {
     path: '/404',
     component: (resolve) => require(['@/views/404'], resolve),
     hidden: true
   },
-
   {
     path: '/',
     component: Layout,
@@ -61,17 +60,6 @@ export const constantRoutes = [
       component: (resolve) => require(['@/views/index/index'], resolve),
       meta: { title: '首页', icon: 'dashboard' }
     }]
-  },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: '外链', icon: 'link' }
-      }
-    ]
   }
 ]
 

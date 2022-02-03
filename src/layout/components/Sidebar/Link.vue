@@ -5,25 +5,25 @@
 </template>
 
 <script>
-import { isExternal } from '@/utils/validate'
+import { isExternal } from '@/utils/validate';
 
 export default {
   props: {
     to: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     isExternal() {
-      return isExternal(this.to)
+      return isExternal(this.to);
     },
     type() {
       if (this.isExternal) {
-        return 'a'
+        return 'a';
       }
-      return 'router-link'
-    }
+      return 'router-link';
+    },
   },
   methods: {
     linkProps(to) {
@@ -31,13 +31,13 @@ export default {
         return {
           href: to,
           target: '_blank',
-          rel: 'noopener'
-        }
+          rel: 'noopener',
+        };
       }
       return {
-        to: to
-      }
-    }
-  }
-}
+        to: to,
+      };
+    },
+  },
+};
 </script>

@@ -1,8 +1,15 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import {
+  MessageBox,
+  Message
+} from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
-import { tansParams } from "@/utils/util";
+import {
+  getToken
+} from '@/utils/auth'
+import {
+  tansParams
+} from "@/utils/util";
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 
@@ -42,7 +49,7 @@ service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
-  */
+   */
 
   /**
    * Determine the request status by custom code
@@ -54,18 +61,17 @@ service.interceptors.response.use(
     // 未设置状态码则默认成功状态
     const code = res.status || 20000;
     // 获取操作信息
-    const msg =  res.message || '系统未知错误';
+    const msg = res.message || '系统未知错误';
     // 二进制数据则直接返回
-    if(response.request.responseType ===  'blob' || response.request.responseType ===  'arraybuffer'){
+    if (response.request.responseType === 'blob' || response.request.responseType === 'arraybuffer') {
       return res.data;
     }
     if (code === 40311 || code === 40342 || code === 40343) {
       MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
-          confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).then(() => {
+        confirmButtonText: '重新登录',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
         store.dispatch('WebLogout').then(() => {
           location.href = '/';
         })
@@ -83,14 +89,14 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error)
-    let { message } = error;
+    let {
+      message
+    } = error;
     if (message == "Network Error") {
       message = "后端接口连接异常";
-    }
-    else if (message.includes("timeout")) {
+    } else if (message.includes("timeout")) {
       message = "系统接口请求超时";
-    }
-    else if (message.includes("Request failed with status code")) {
+    } else if (message.includes("Request failed with status code")) {
       message = "系统接口" + message.substr(message.length - 3) + "异常";
     }
     Message({

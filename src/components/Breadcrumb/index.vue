@@ -5,8 +5,9 @@
         <span
           v-if="item.redirect === 'noRedirect' || index == levelList.length - 1"
           class="no-redirect"
-          >{{ item.meta.title }}</span
         >
+          {{ item.meta.title }}
+        </span>
         <a v-else @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
       </el-breadcrumb-item>
     </transition-group>
@@ -14,7 +15,7 @@
 </template>
 
 <script>
-import pathToRegexp from "path-to-regexp";
+import pathToRegexp from 'path-to-regexp';
 
 export default {
   data() {
@@ -25,7 +26,7 @@ export default {
   watch: {
     $route(route) {
       // if you go to the redirect page, do not update the breadcrumbs
-      if (route.path.startsWith("/redirect/")) {
+      if (route.path.startsWith('/redirect/')) {
         return;
       }
       this.getBreadcrumb();
@@ -37,19 +38,15 @@ export default {
   methods: {
     getBreadcrumb() {
       // only show routes with meta.title
-      let matched = this.$route.matched.filter(
-        (item) => item.meta && item.meta.title
-      );
+      let matched = this.$route.matched.filter(item => item.meta && item.meta.title);
       const first = matched[0];
 
       if (!this.isIndex(first)) {
-        matched = [{ path: "/", meta: { title: "首页" } }].concat(
-          matched
-        );
+        matched = [{ path: '/', meta: { title: '首页' } }].concat(matched);
       }
 
       this.levelList = matched.filter(
-        (item) => item.meta && item.meta.title && item.meta.breadcrumb !== false
+        item => item.meta && item.meta.title && item.meta.breadcrumb !== false
       );
     },
     isIndex(route) {
@@ -57,9 +54,7 @@ export default {
       if (!name) {
         return false;
       }
-      return (
-        name.trim().toLocaleLowerCase() === "Index".toLocaleLowerCase()
-      );
+      return name.trim().toLocaleLowerCase() === 'Index'.toLocaleLowerCase();
     },
     pathCompile(path) {
       // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
