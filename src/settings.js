@@ -6,6 +6,11 @@ module.exports = {
   showSettings: false,
 
   /**
+   * 是否显示 tagsView
+   */
+  tagsView: true,
+
+  /**
    * 是否固定头部
    */
   fixedHeader: false,

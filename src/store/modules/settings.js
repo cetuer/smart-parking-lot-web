@@ -3,11 +3,13 @@ import defaultSettings from '@/settings'
 const {
   showSettings,
   fixedHeader,
-  sidebarLogo
+  sidebarLogo,
+  tagsView
 } = defaultSettings
 
 const state = {
   title: '',
+  tagsView: tagsView,
   showSettings: showSettings,
   fixedHeader: fixedHeader,
   sidebarLogo: sidebarLogo

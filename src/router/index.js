@@ -28,17 +28,14 @@ import ParentView from '@/components/ParentView'
  */
 
 // 公共路由
-export const constantRoutes = [
-  {
+export const constantRoutes = [{
     path: '/redirect',
     component: Layout,
     hidden: true,
-    children: [
-      {
-        path: '/redirect/:path(.*)',
-        component: () => import('@/views/redirect/index')
-      }
-    ]
+    children: [{
+      path: '/redirect/:path(.*)',
+      component: () => import('@/views/redirect/index')
+    }]
   },
   {
     path: '/login',
@@ -58,13 +55,33 @@ export const constantRoutes = [
       path: 'index',
       name: 'Index',
       component: (resolve) => require(['@/views/index/index'], resolve),
-      meta: { title: '首页', icon: 'dashboard' }
+      meta: {
+        title: '首页',
+        icon: 'dashboard',
+        affix: true
+      }
+    }]
+  },
+  {
+    path: '/system/user-auth',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: 'role/:userId(\\d+)',
+      component: (resolve) => require(['@/views/system/user/authRole'], resolve),
+      name: 'AuthRole',
+      meta: {
+        title: '分配角色',
+        activeMenu: '/system/user'
+      }
     }]
   }
 ]
 
 export default new Router({
   mode: 'history', // 去掉url中的#
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRoutes
 })

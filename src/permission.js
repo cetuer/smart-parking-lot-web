@@ -28,7 +28,10 @@ router.beforeEach((to, from, next) => {
       })
       NProgress.done()
     } else {
-      if (store.getters.roles.length === 0) {
+      if (store.getters.refresh) {
+        store.dispatch('RefreshPermission', {
+          refresh: false
+        })
         // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetInfo').then(() => {
           if (flag) {

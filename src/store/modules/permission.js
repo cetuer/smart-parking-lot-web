@@ -3,7 +3,7 @@ import {
 } from '@/router'
 import {
   getRouters
-} from '@/api/menu'
+} from '@/api/system/menu'
 import Layout from '@/layout/index'
 import ParentView from '@/components/ParentView'
 
@@ -13,7 +13,9 @@ const permission = {
     addRoutes: [],
     defaultRoutes: [],
     topbarRouters: [],
-    sidebarRouters: []
+    sidebarRouters: [],
+    // 是否应该刷新权限、菜单信息
+    refresh: true,
   },
   mutations: {
     SET_ROUTES: (state, routes) => {
@@ -36,6 +38,9 @@ const permission = {
     },
     SET_SIDEBAR_ROUTERS: (state, routes) => {
       state.sidebarRouters = routes
+    },
+    SET_REFRESH: (state, refresh) => {
+      state.refresh = refresh
     },
   },
   actions: {
@@ -62,6 +67,14 @@ const permission = {
           resolve(rewriteRoutes)
         })
       })
+    },
+    // 刷新权限和菜单信息
+    RefreshPermission({
+      commit
+    }, {
+      refresh
+    }) {
+      commit('SET_REFRESH', refresh)
     }
   }
 }

@@ -6,9 +6,12 @@ const getters = {
   avatar: state => state.user.avatar,
   roles: state => state.user.roles,
   permissions: state => state.user.permissions,
+  visitedViews: state => state.tagsView.visitedViews,
+  cachedViews: state => state.tagsView.cachedViews,
   permissionRouters: state => state.permission.routes,
   topbarRouters: state => state.permission.topbarRouters,
   defaultRoutes: state => state.permission.defaultRoutes,
-  sidebarRouters: state => state.permission.sidebarRouters
+  sidebarRouters: state => state.permission.sidebarRouters,
+  refresh: state => state.permission.refresh
 }
 export default getters

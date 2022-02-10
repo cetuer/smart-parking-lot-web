@@ -6,9 +6,10 @@
       @click="handleClickOutside"
     />
     <sidebar class="sidebar-container" />
-    <div class="main-container">
+    <div :class="{ hasTagsView: needTagsView }" class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
         <navbar />
+        <tags-view v-if="needTagsView" />
       </div>
       <app-main />
     </div>
@@ -16,7 +17,7 @@
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain } from './components';
+import { Navbar, Sidebar, AppMain, TagsView } from './components';
 import { mapState } from 'vuex';
 import ResizeMixin from './mixin/ResizeHandler';
 
@@ -26,12 +27,14 @@ export default {
     Navbar,
     Sidebar,
     AppMain,
+    TagsView,
   },
   mixins: [ResizeMixin],
   computed: {
     ...mapState({
       sidebar: state => state.app.sidebar,
       device: state => state.app.device,
+      needTagsView: state => state.settings.tagsView,
       fixedHeader: state => state.settings.fixedHeader,
     }),
     classObj() {

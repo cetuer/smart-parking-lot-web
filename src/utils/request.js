@@ -77,6 +77,13 @@ service.interceptors.response.use(
         })
       }).catch(() => {});
       return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
+    } else if (code === 40400) {
+      const message = msg + "：" + res.data
+      Message({
+        message: message,
+        type: 'error'
+      })
+      return Promise.reject(new Error(message))
     } else if (code !== 20000) {
       Message({
         message: msg,

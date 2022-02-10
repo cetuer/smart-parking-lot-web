@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { getCodeImg } from '@/api/user';
+import { getCodeImg } from '@/api/system/user';
 import Cookies from 'js-cookie';
 import { encrypt, decrypt } from '@/utils/jsencrypt';
 
