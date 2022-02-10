@@ -3,6 +3,8 @@ import Vue from 'vue'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
+// 头部标签组件
+import VueMeta from 'vue-meta'
 import 'element-ui/lib/theme-chalk/index.css'
 
 import '@/assets/styles/index.scss' // global css
@@ -33,6 +35,7 @@ Vue.component('Pagination', Pagination)
 Vue.component('RightToolbar', RightToolbar)
 
 Vue.use(ElementUI)
+Vue.use(VueMeta)
 Vue.use(directive)
 Vue.use(plugins)
 

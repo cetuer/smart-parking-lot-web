@@ -1,5 +1,5 @@
 <template>
-  <div :class="classObj" class="app-wrapper">
+  <div :class="classObj" class="app-wrapper" :style="{ '--current-color': theme }">
     <div
       v-if="device === 'mobile' && sidebar.opened"
       class="drawer-bg"
@@ -12,14 +12,19 @@
         <tags-view v-if="needTagsView" />
       </div>
       <app-main />
+      <right-panel>
+        <settings />
+      </right-panel>
     </div>
   </div>
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain, TagsView } from './components';
+import RightPanel from '@/components/RightPanel'
+import { Navbar, Sidebar, AppMain, TagsView, Settings } from './components';
 import { mapState } from 'vuex';
 import ResizeMixin from './mixin/ResizeHandler';
+import variables from '@/assets/styles/variables.scss';
 
 export default {
   name: 'Layout',
@@ -28,10 +33,14 @@ export default {
     Sidebar,
     AppMain,
     TagsView,
+    Settings,
+    RightPanel,
   },
   mixins: [ResizeMixin],
   computed: {
     ...mapState({
+      theme: state => state.settings.theme,
+      sideTheme: state => state.settings.sideTheme,
       sidebar: state => state.app.sidebar,
       device: state => state.app.device,
       needTagsView: state => state.settings.tagsView,
@@ -44,6 +53,9 @@ export default {
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === 'mobile',
       };
+    },
+    variables() {
+      return variables;
     },
   },
   methods: {
@@ -83,7 +95,7 @@ export default {
   top: 0;
   right: 0;
   z-index: 9;
-  width: calc(100% - #{$sideBarWidth});
+  width: calc(100% - #{$base-sidebar-width});
   transition: width 0.28s;
 }
 

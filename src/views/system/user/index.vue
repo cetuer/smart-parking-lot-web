@@ -131,7 +131,7 @@
       />
       <el-table-column label="状态" align="center" key="status" v-if="columns[5].visible">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.status === 1">正常</el-tag>
+          <el-tag type="success" v-if="scope.row.status === 1">正常</el-tag>
           <el-tag type="danger" v-else>停用</el-tag>
         </template>
       </el-table-column>
