@@ -150,3 +150,12 @@ export function updateProfilePwd(oldPwd, newPwd) {
     params: data
   })
 }
+
+// 更新头像
+export function uploadAvatar(data) {
+  return request({
+    url: '/parking-admin/user/avatar',
+    method: 'post',
+    data: data
+  })
+}
