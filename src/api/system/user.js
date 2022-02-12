@@ -120,3 +120,33 @@ export function updateUserRole(data) {
     params: data
   })
 }
+
+// 获取个人信息
+export function getProfileInfo() {
+  return request({
+    url: '/parking-admin/user/profileInfo',
+    method: 'get'
+  })
+}
+
+// 修改个人信息
+export function updateProfile(user) {
+  return request({
+    url: '/parking-admin/user/updateProfile',
+    method: 'put',
+    data: user
+  })
+}
+
+// 重置个人密码
+export function updateProfilePwd(oldPwd, newPwd) {
+  const data = {
+    oldPwd,
+    newPwd
+  }
+  return request({
+    url: '/parking-admin/user/updateProfilePwd',
+    method: 'put',
+    params: data
+  })
+}
