@@ -12,7 +12,6 @@ const permission = {
     routes: [],
     addRoutes: [],
     defaultRoutes: [],
-    topbarRouters: [],
     sidebarRouters: [],
     // 是否应该刷新权限、菜单信息
     refresh: true,
@@ -24,17 +23,6 @@ const permission = {
     },
     SET_DEFAULT_ROUTES: (state, routes) => {
       state.defaultRoutes = constantRoutes.concat(routes)
-    },
-    SET_TOPBAR_ROUTES: (state, routes) => {
-      // 顶部导航菜单默认添加统计报表栏指向首页
-      const index = [{
-        path: 'index',
-        meta: {
-          title: '统计报表',
-          icon: 'dashboard'
-        }
-      }]
-      state.topbarRouters = routes.concat(index);
     },
     SET_SIDEBAR_ROUTERS: (state, routes) => {
       state.sidebarRouters = routes
@@ -63,7 +51,6 @@ const permission = {
           commit('SET_ROUTES', rewriteRoutes)
           commit('SET_SIDEBAR_ROUTERS', constantRoutes.concat(sidebarRoutes))
           commit('SET_DEFAULT_ROUTES', sidebarRoutes)
-          commit('SET_TOPBAR_ROUTES', sidebarRoutes)
           resolve(rewriteRoutes)
         })
       })

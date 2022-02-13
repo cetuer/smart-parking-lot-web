@@ -36,7 +36,7 @@ router.beforeEach((to, from, next) => {
         store.dispatch('GetInfo').then(() => {
           if (flag) {
             store.dispatch('GenerateRoutes').then(accessRoutes => {
-              // 根据roles权限生成可访问的路由表
+              // 根据permissions权限生成可访问的路由表
               router.addRoutes(accessRoutes) // 动态添加可访问路由表
               flag = false
               next({
