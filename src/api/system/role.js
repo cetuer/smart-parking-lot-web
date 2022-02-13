@@ -10,3 +10,12 @@ export function listRole(userId) {
     method: 'get'
   })
 }
+
+// 分页查询角色列表
+export function listRoleByPage(query) {
+  return request({
+    url: '/parking-admin/role/listByPage',
+    method: 'get',
+    params: query
+  })
+}
