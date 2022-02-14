@@ -19,3 +19,20 @@ export function listRoleByPage(query) {
     params: query
   })
 }
+
+// 检查角色名是否唯一
+export function checkRoleNameUnique(roleName) {
+  return request({
+    url: '/parking-admin/role/check/' + roleName,
+    method: 'get'
+  })
+}
+
+// 增加角色
+export function addRole(data) {
+  return request({
+    url: '/parking-admin/role',
+    method: 'post',
+    data: data
+  })
+}

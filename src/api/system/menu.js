@@ -16,3 +16,11 @@ export function listMenu(query) {
     params: query
   })
 }
+
+// 查询菜单下拉树结构
+export function treeSelect() {
+  return request({
+    url: '/parking-admin/menu/treeSelect',
+    method: 'get'
+  })
+}
