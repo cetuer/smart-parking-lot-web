@@ -36,3 +36,20 @@ export function addRole(data) {
     data: data
   })
 }
+
+// 查询角色详细
+export function getRole(roleId) {
+  return request({
+    url: '/parking-admin/role/' + roleId,
+    method: 'get'
+  })
+}
+
+// 修改角色
+export function updateRole(data) {
+  return request({
+    url: '/parking-admin/role',
+    method: 'put',
+    data: data
+  })
+}

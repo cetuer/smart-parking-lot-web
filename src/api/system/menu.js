@@ -24,3 +24,11 @@ export function treeSelect() {
     method: 'get'
   })
 }
+
+// 根据角色ID查询菜单下拉树结构
+export function roleMenuTreeSelect(roleId) {
+  return request({
+    url: '/parking-admin/menu/roleMenuTreeSelect/' + roleId,
+    method: 'get'
+  })
+}

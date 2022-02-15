@@ -25,10 +25,9 @@
       @selection-change="handleSelectionChange"
       :data="roles.slice((pageNum - 1) * pageSize, pageNum * pageSize)"
     >
-      <el-table-column type="selection" :reserve-selection="true" align="center" width="100"/>
+      <el-table-column type="selection" :reserve-selection="true" align="center" width="100" :selectable="disabledRole" />
       <el-table-column label="角色编号" align="center" prop="id" />
       <el-table-column label="角色名称" align="center" prop="name" />
-      <el-table-column label="权限字符" align="center" prop="key" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="170" />
     </el-table>
 
@@ -90,8 +89,13 @@ export default {
     }
   },
   methods: {
+    // 禁用角色
+    disabledRole(row) {
+      return row.status === 1;
+    },
     /** 单击选中行数据 */
     clickRow(row) {
+      if(row.status === 0) return;
       this.$refs.table.toggleRowSelection(row);
     },
     // 多选框选中数据

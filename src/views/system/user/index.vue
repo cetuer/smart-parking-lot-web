@@ -90,7 +90,7 @@
     </el-row>
 
     <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="50" align="center" />
+      <el-table-column type="selection" width="50" align="center" :selectable="disabledUser" />
       <el-table-column
         label="用户编号"
         align="center"
@@ -177,16 +177,10 @@
               更多
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item
-                command="handleResetPwd"
-                icon="el-icon-key"
-              >
+              <el-dropdown-item command="handleResetPwd" icon="el-icon-key">
                 重置密码
               </el-dropdown-item>
-              <el-dropdown-item
-                command="handleAuthRole"
-                icon="el-icon-circle-check"
-              >
+              <el-dropdown-item command="handleAuthRole" icon="el-icon-circle-check">
                 分配角色
               </el-dropdown-item>
             </el-dropdown-menu>
@@ -383,6 +377,10 @@ export default {
     this.getList();
   },
   methods: {
+    // 是否不可操作
+    disabledUser(row) {
+      return row.id !== 1;
+    },
     // 查找用户列表
     getList() {
       this.loading = true;
@@ -519,9 +517,9 @@ export default {
         .catch(() => {});
     },
     // 分配角色
-    handleAuthRole: function(row) {
+    handleAuthRole: function (row) {
       const userId = row.id;
-      this.$router.push("/system/user-auth/role/" + userId);
+      this.$router.push('/system/user-auth/role/' + userId);
     },
   },
 };

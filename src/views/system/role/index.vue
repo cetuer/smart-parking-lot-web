@@ -37,7 +37,7 @@
           新增
         </el-button>
       </el-col>
-      <!-- <el-col :span="1.5">
+      <el-col :span="1.5">
         <el-button
           type="success"
           plain
@@ -46,9 +46,11 @@
           :disabled="single"
           @click="handleUpdate"
           v-permission="['system:role:edit']"
-        >修改</el-button>
+        >
+          修改
+        </el-button>
       </el-col>
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="danger"
           plain
@@ -63,7 +65,7 @@
     </el-row>
 
     <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="selection" width="55" align="center" :selectable="disabledRole" />
       <el-table-column label="角色编号" prop="id" align="center" />
       <el-table-column label="角色名称" prop="name" align="center" :show-overflow-tooltip="true" />
       <el-table-column label="显示顺序" prop="order" align="center" />
@@ -74,16 +76,18 @@
         </template>
       </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" />
-      <!-- <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope" v-if="scope.row.id !== 1">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:role:edit']"
-          >修改</el-button>
-          <el-button
+            v-permission="['system:role:edit']"
+          >
+            修改
+          </el-button>
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
@@ -100,9 +104,9 @@
               <el-dropdown-item command="handleAuthUser" icon="el-icon-user"
                 v-hasPermi="['system:role:edit']">分配用户</el-dropdown-item>
             </el-dropdown-menu>
-          </el-dropdown>
+          </el-dropdown> -->
         </template>
-      </el-table-column> -->
+      </el-table-column>
     </el-table>
 
     <pagination
@@ -142,7 +146,7 @@
             全选/全不选
           </el-checkbox>
           <el-checkbox
-            v-model="form.menuCheckStrictly"
+            v-model="menuCheckStrictly"
             @change="handleCheckedTreeConnect($event, 'menu')"
           >
             父子联动
@@ -153,7 +157,7 @@
             show-checkbox
             ref="menu"
             node-key="id"
-            :check-strictly="!form.menuCheckStrictly"
+            :check-strictly="!menuCheckStrictly"
             empty-text="暂无数据"
             :props="defaultProps"
           ></el-tree>
@@ -210,8 +214,8 @@
 </template>
 
 <script>
-import { listRoleByPage, checkRoleNameUnique, addRole } from '@/api/system/role';
-import { treeSelect as menuTreeSelect } from '@/api/system/menu';
+import { listRoleByPage, checkRoleNameUnique, addRole, getRole, updateRole } from '@/api/system/role';
+import { treeSelect as menuTreeSelect, roleMenuTreeSelect } from '@/api/system/menu';
 // import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/system/dept";
 
 export default {
@@ -219,7 +223,14 @@ export default {
   data() {
     const validatorRoleName = (rule, value, callback) => {
       checkRoleNameUnique(value).then(res => {
-        if (!res) {
+        if (this.form.id != undefined) {
+          if (value === this.roleName) {
+            return callback();
+          } else {
+            return callback(new Error('角色名已存在'));
+          }
+        }
+        if (res) {
           callback(new Error('角色名已存在'));
         }
         callback();
@@ -244,10 +255,16 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
+      // 临时保存角色名用于验证是否已存在
+      roleName: undefined,
       // // 是否显示弹出层（数据权限）
       // openDataScope: false,
+      // 是否展开
       menuExpand: false,
+      // 是否选择所有
       menuNodeAll: false,
+      // 是否父子联动
+      menuCheckStrictly: false,
       // // 数据范围选项
       // dataScopeOptions: [
       //   {
@@ -300,6 +317,10 @@ export default {
     this.getList();
   },
   methods: {
+    // 是否不可操作
+    disabledRole(row) {
+      return row.id !== 1;
+    },
     // 查询角色列表
     getList() {
       this.loading = true;
@@ -324,20 +345,13 @@ export default {
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return checkedKeys;
     },
-    // /** 根据角色ID查询菜单树结构 */
-    // getRoleMenuTreeselect(roleId) {
-    //   return roleMenuTreeselect(roleId).then(response => {
-    //     this.menuOptions = response.menus;
-    //     return response;
-    //   });
-    // },
-    // /** 根据角色ID查询部门树结构 */
-    // getRoleDeptTreeselect(roleId) {
-    //   return roleDeptTreeselect(roleId).then(response => {
-    //     this.deptOptions = response.depts;
-    //     return response;
-    //   });
-    // },
+    // 根据角色ID查询菜单树结构
+    getRoleMenuTreeSelect(roleId) {
+      return roleMenuTreeSelect(roleId).then(response => {
+        this.menuOptions = response.menus;
+        return response;
+      });
+    },
     // 取消按钮
     cancel() {
       this.open = false;
@@ -355,6 +369,7 @@ export default {
       }
       (this.menuExpand = false),
         (this.menuNodeAll = false),
+        (this.menuCheckStrictly = false),
         (this.menuOptions = []),
         (this.form = {
           id: undefined,
@@ -362,7 +377,6 @@ export default {
           order: 1,
           status: 1,
           menuIds: [],
-          menuCheckStrictly: true,
         });
       this.resetForm('form');
     },
@@ -408,7 +422,7 @@ export default {
     },
     // 父子联动
     handleCheckedTreeConnect(value, type) {
-      this.form.menuCheckStrictly = value ? true : false;
+      this.menuCheckStrictly = value ? true : false;
     },
     // 新增按钮操作
     handleAdd() {
@@ -417,27 +431,28 @@ export default {
       this.open = true;
       this.title = '添加角色';
     },
-    // /** 修改按钮操作 */
-    // handleUpdate(row) {
-    //   this.reset();
-    //   const roleId = row.roleId || this.ids
-    //   const roleMenu = this.getRoleMenuTreeselect(roleId);
-    //   getRole(roleId).then(response => {
-    //     this.form = response.data;
-    //     this.open = true;
-    //     this.$nextTick(() => {
-    //       roleMenu.then(res => {
-    //         let checkedKeys = res.checkedKeys
-    //         checkedKeys.forEach((v) => {
-    //             this.$nextTick(()=>{
-    //                 this.$refs.menu.setChecked(v, true ,false);
-    //             })
-    //         })
-    //       });
-    //     });
-    //     this.title = "修改角色";
-    //   });
-    // },
+    // 修改按钮操作
+    handleUpdate(row) {
+      this.reset();
+      const roleId = row.id || this.ids;
+      const roleMenu = this.getRoleMenuTreeSelect(roleId);
+      getRole(roleId).then(response => {
+        this.form = response;
+        this.roleName = this.form.name;
+        this.open = true;
+        this.$nextTick(() => {
+          roleMenu.then(res => {
+            let checkedKeys = res.checkedKeys;
+            checkedKeys.forEach(v => {
+              this.$nextTick(() => {
+                this.$refs.menu.setChecked(v, true, false);
+              });
+            });
+          });
+        });
+        this.title = '修改角色';
+      });
+    },
     // /** 选择角色权限范围触发 */
     // dataScopeSelectChange(value) {
     //   if(value !== '2') {
