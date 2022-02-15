@@ -53,3 +53,11 @@ export function updateRole(data) {
     data: data
   })
 }
+
+// 删除角色
+export function delRole(roleId) {
+  return request({
+    url: '/parking-admin/role/' + roleId,
+    method: 'delete'
+  })
+}

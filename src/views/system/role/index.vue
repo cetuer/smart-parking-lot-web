@@ -50,7 +50,7 @@
           修改
         </el-button>
       </el-col>
-      <!-- <el-col :span="1.5">
+      <el-col :span="1.5">
         <el-button
           type="danger"
           plain
@@ -60,7 +60,7 @@
           @click="handleDelete"
           v-permission="['system:role:remove']"
         >删除</el-button>
-      </el-col> -->
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList" />
     </el-row>
 
@@ -87,13 +87,14 @@
           >
             修改
           </el-button>
-          <!-- <el-button
+          <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:role:remove']"
+            v-permission="['system:role:remove']"
           >删除</el-button>
+          <!-- 
           <el-dropdown size="mini" @command="(command) => handleCommand(command, scope.row)" v-hasPermi="['system:role:edit']">
             <span class="el-dropdown-link">
               <i class="el-icon-d-arrow-right el-icon--right"></i>更多
@@ -214,7 +215,7 @@
 </template>
 
 <script>
-import { listRoleByPage, checkRoleNameUnique, addRole, getRole, updateRole } from '@/api/system/role';
+import { listRoleByPage, checkRoleNameUnique, addRole, getRole, updateRole, delRole } from '@/api/system/role';
 import { treeSelect as menuTreeSelect, roleMenuTreeSelect } from '@/api/system/menu';
 // import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/system/dept";
 
@@ -512,16 +513,16 @@ export default {
     //     });
     //   }
     // },
-    // /** 删除按钮操作 */
-    // handleDelete(row) {
-    //   const roleIds = row.roleId || this.ids;
-    //   this.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项？').then(function() {
-    //     return delRole(roleIds);
-    //   }).then(() => {
-    //     this.getList();
-    //     this.$modal.msgSuccess("删除成功");
-    //   }).catch(() => {});
-    // },
+    /** 删除按钮操作 */
+    handleDelete(row) {
+      const roleIds = row.id || this.ids;
+      this.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项?').then(function() {
+        return delRole(roleIds);
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      }).catch(() => {});
+    },
   },
 };
 </script>
