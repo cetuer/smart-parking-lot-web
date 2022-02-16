@@ -61,3 +61,39 @@ export function delRole(roleId) {
     method: 'delete'
   })
 }
+
+// 分页查询角色已授权用户列表
+export function allocatedUserList(query) {
+  return request({
+    url: '/parking-admin/role/allocatedList',
+    method: 'get',
+    params: query
+  })
+}
+
+// 取消用户授权角色
+export function authUserCancel(params) {
+  return request({
+    url: '/parking-admin/role/cancelAuthUser',
+    method: 'put',
+    params: params
+  })
+}
+
+// 分页查询角色未授权用户列表
+export function unallocatedList(query) {
+  return request({
+    url: '/parking-admin/role/unallocatedList',
+    method: 'get',
+    params: query
+  })
+}
+
+// 授权用户选择
+export function authUserSelectAll(data) {
+  return request({
+    url: '/parking-admin/role/authUsers',
+    method: 'put',
+    params: data
+  })
+}

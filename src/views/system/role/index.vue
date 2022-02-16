@@ -59,7 +59,9 @@
           :disabled="multiple"
           @click="handleDelete"
           v-permission="['system:role:remove']"
-        >删除</el-button>
+        >
+          删除
+        </el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList" />
     </el-row>
@@ -93,19 +95,18 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-permission="['system:role:remove']"
-          >删除</el-button>
-          <!-- 
-          <el-dropdown size="mini" @command="(command) => handleCommand(command, scope.row)" v-hasPermi="['system:role:edit']">
-            <span class="el-dropdown-link">
-              <i class="el-icon-d-arrow-right el-icon--right"></i>更多
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="handleDataScope" icon="el-icon-circle-check"
-                v-hasPermi="['system:role:edit']">数据权限</el-dropdown-item>
-              <el-dropdown-item command="handleAuthUser" icon="el-icon-user"
-                v-hasPermi="['system:role:edit']">分配用户</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown> -->
+          >
+            删除
+          </el-button>
+                    <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-user"
+            @click="handleAuthUser(scope.row)"
+            v-permission="['system:role:edit']"
+          >
+            分配用户
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -169,55 +170,19 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
-
-    <!-- 分配角色数据权限对话框 -->
-    <!-- <el-dialog :title="title" :visible.sync="openDataScope" width="500px" append-to-body>
-      <el-form :model="form" label-width="80px">
-        <el-form-item label="角色名称">
-          <el-input v-model="form.roleName" :disabled="true" />
-        </el-form-item>
-        <el-form-item label="权限字符">
-          <el-input v-model="form.roleKey" :disabled="true" />
-        </el-form-item>
-        <el-form-item label="权限范围">
-          <el-select v-model="form.dataScope" @change="dataScopeSelectChange">
-            <el-option
-              v-for="item in dataScopeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="数据权限" v-show="form.dataScope == 2">
-          <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
-          <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选</el-checkbox>
-          <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">父子联动</el-checkbox>
-          <el-tree
-            class="tree-border"
-            :data="deptOptions"
-            show-checkbox
-            default-expand-all
-            ref="dept"
-            node-key="id"
-            :check-strictly="!form.deptCheckStrictly"
-            empty-text="加载中,请稍候"
-            :props="defaultProps"
-          ></el-tree>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitDataScope">确 定</el-button>
-        <el-button @click="cancelDataScope">取 消</el-button>
-      </div>
-    </el-dialog> -->
   </div>
 </template>
 
 <script>
-import { listRoleByPage, checkRoleNameUnique, addRole, getRole, updateRole, delRole } from '@/api/system/role';
+import {
+  listRoleByPage,
+  checkRoleNameUnique,
+  addRole,
+  getRole,
+  updateRole,
+  delRole,
+} from '@/api/system/role';
 import { treeSelect as menuTreeSelect, roleMenuTreeSelect } from '@/api/system/menu';
-// import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/system/dept";
 
 export default {
   name: 'Role',
@@ -258,37 +223,12 @@ export default {
       open: false,
       // 临时保存角色名用于验证是否已存在
       roleName: undefined,
-      // // 是否显示弹出层（数据权限）
-      // openDataScope: false,
       // 是否展开
       menuExpand: false,
       // 是否选择所有
       menuNodeAll: false,
       // 是否父子联动
       menuCheckStrictly: false,
-      // // 数据范围选项
-      // dataScopeOptions: [
-      //   {
-      //     value: "1",
-      //     label: "全部数据权限"
-      //   },
-      //   {
-      //     value: "2",
-      //     label: "自定数据权限"
-      //   },
-      //   {
-      //     value: "3",
-      //     label: "本部门数据权限"
-      //   },
-      //   {
-      //     value: "4",
-      //     label: "本部门及以下数据权限"
-      //   },
-      //   {
-      //     value: "5",
-      //     label: "仅本人数据权限"
-      //   }
-      // ],
       // 菜单列表
       menuOptions: [],
       // 查询参数
@@ -358,11 +298,6 @@ export default {
       this.open = false;
       this.reset();
     },
-    // // 取消按钮（数据权限）
-    // cancelDataScope() {
-    //   this.openDataScope = false;
-    //   this.reset();
-    // },
     // 表单重置
     reset() {
       if (this.$refs.menu != undefined) {
@@ -397,19 +332,6 @@ export default {
       this.single = selection.length != 1;
       this.multiple = !selection.length;
     },
-    // // 更多操作触发
-    // handleCommand(command, row) {
-    //   switch (command) {
-    //     case "handleDataScope":
-    //       this.handleDataScope(row);
-    //       break;
-    //     case "handleAuthUser":
-    //       this.handleAuthUser(row);
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // },
     // 展开/折叠
     handleCheckedTreeExpand(value, type) {
       let treeList = this.menuOptions;
@@ -454,34 +376,13 @@ export default {
         this.title = '修改角色';
       });
     },
-    // /** 选择角色权限范围触发 */
-    // dataScopeSelectChange(value) {
-    //   if(value !== '2') {
-    //     this.$refs.dept.setCheckedKeys([]);
-    //   }
-    // },
-    // /** 分配数据权限操作 */
-    // handleDataScope(row) {
-    //   this.reset();
-    //   const roleDeptTreeselect = this.getRoleDeptTreeselect(row.roleId);
-    //   getRole(row.roleId).then(response => {
-    //     this.form = response.data;
-    //     this.openDataScope = true;
-    //     this.$nextTick(() => {
-    //       roleDeptTreeselect.then(res => {
-    //         this.$refs.dept.setCheckedKeys(res.checkedKeys);
-    //       });
-    //     });
-    //     this.title = "分配数据权限";
-    //   });
-    // },
-    // /** 分配用户操作 */
-    // handleAuthUser: function(row) {
-    //   const roleId = row.roleId;
-    //   this.$router.push("/system/role-auth/user/" + roleId);
-    // },
+    // 分配用户操作
+    handleAuthUser(row) {                                                                                                                                                                                                                                                                                                                                             
+      const roleId = row.id;
+      this.$router.push("/system/role-auth/user/" + roleId);
+    },
     // 提交按钮
-    submitForm: function () {
+    submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {
@@ -502,26 +403,19 @@ export default {
         }
       });
     },
-    // /** 提交按钮（数据权限） */
-    // submitDataScope: function() {
-    //   if (this.form.roleId != undefined) {
-    //     this.form.deptIds = this.getDeptAllCheckedKeys();
-    //     dataScope(this.form).then(response => {
-    //       this.$modal.msgSuccess("修改成功");
-    //       this.openDataScope = false;
-    //       this.getList();
-    //     });
-    //   }
-    // },
-    /** 删除按钮操作 */
+    // 删除按钮操作
     handleDelete(row) {
       const roleIds = row.id || this.ids;
-      this.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项?').then(function() {
-        return delRole(roleIds);
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      this.$modal
+        .confirm('是否确认删除角色编号为"' + roleIds + '"的数据项?')
+        .then(function () {
+          return delRole(roleIds);
+        })
+        .then(() => {
+          this.getList();
+          this.$modal.msgSuccess('删除成功');
+        })
+        .catch(() => {});
     },
   },
 };

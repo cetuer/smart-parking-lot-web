@@ -90,7 +90,21 @@ export const constantRoutes = [{
         activeMenu: '/system/user'
       }
     }]
-  }
+  },
+  {
+    path: '/system/role-auth',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: 'user/:roleId(\\d+)',
+      component: (resolve) => require(['@/views/system/role/authUser'], resolve),
+      name: 'AuthUser',
+      meta: {
+        title: '分配用户',
+        activeMenu: '/system/role'
+      }
+    }]
+  },
 ]
 
 export default new Router({

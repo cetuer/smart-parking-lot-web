@@ -72,6 +72,9 @@ service.interceptors.response.use(
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        store.dispatch('RefreshPermission', {
+          refresh: true
+        })
         store.dispatch('WebLogout').then(() => {
           location.href = '/';
         })
