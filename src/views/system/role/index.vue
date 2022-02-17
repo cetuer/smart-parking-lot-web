@@ -79,13 +79,14 @@
       </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope" v-if="scope.row.id !== 1">
+        <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-permission="['system:role:edit']"
+            v-if="scope.row.id !== 1"
           >
             修改
           </el-button>
@@ -95,10 +96,11 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-permission="['system:role:remove']"
+            v-if="scope.row.id !== 1"
           >
             删除
           </el-button>
-                    <el-button
+          <el-button
             size="mini"
             type="text"
             icon="el-icon-user"
@@ -377,9 +379,9 @@ export default {
       });
     },
     // 分配用户操作
-    handleAuthUser(row) {                                                                                                                                                                                                                                                                                                                                             
+    handleAuthUser(row) {
       const roleId = row.id;
-      this.$router.push("/system/role-auth/user/" + roleId);
+      this.$router.push('/system/role-auth/user/' + roleId);
     },
     // 提交按钮
     submitForm() {
