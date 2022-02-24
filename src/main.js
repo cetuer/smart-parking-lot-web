@@ -1,6 +1,7 @@
 import Vue from 'vue'
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
+import './assets/styles/element-variables.scss'
 
 import ElementUI from 'element-ui'
 // 头部标签组件
@@ -20,7 +21,8 @@ import '@/assets/icons' // icon
 import '@/permission' // permission control
 
 import {
-  resetForm
+  resetForm,
+  handleTree
 } from "@/utils/cetuer";
 // 分页组件
 import Pagination from "@/components/Pagination";
@@ -29,6 +31,7 @@ import RightToolbar from "@/components/RightToolbar"
 
 // 全局方法挂载
 Vue.prototype.resetForm = resetForm
+Vue.prototype.handleTree = handleTree
 
 // 全局组件挂载
 Vue.component('Pagination', Pagination)

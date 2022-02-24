@@ -11,7 +11,7 @@ export function getRouters() {
 //查询菜单列表
 export function listMenu(query) {
   return request({
-    url: '/parking-admin/menu/list',
+    url: '/parking-admin/menu/listByPage',
     method: 'get',
     params: query
   })
@@ -30,5 +30,39 @@ export function roleMenuTreeSelect(roleId) {
   return request({
     url: '/parking-admin/menu/roleMenuTreeSelect/' + roleId,
     method: 'get'
+  })
+}
+
+// 新增菜单
+export function addMenu(data) {
+  return request({
+    url: '/parking-admin/menu',
+    method: 'post',
+    data: data
+  })
+}
+
+// 查询菜单详细
+export function getMenu(menuId) {
+  return request({
+    url: '/parking-admin/menu/' + menuId,
+    method: 'get'
+  })
+}
+
+// 修改菜单
+export function updateMenu(data) {
+  return request({
+    url: '/parking-admin/menu',
+    method: 'put',
+    data: data
+  })
+}
+
+// 删除菜单
+export function delMenu(menuId) {
+  return request({
+    url: '/parking-admin/menu/' + menuId,
+    method: 'delete'
   })
 }

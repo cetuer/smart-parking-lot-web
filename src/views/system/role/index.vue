@@ -245,6 +245,7 @@ export default {
       defaultProps: {
         children: 'children',
         label: 'label',
+        disabled: 'disabled',
       },
       // 表单校验
       rules: {
