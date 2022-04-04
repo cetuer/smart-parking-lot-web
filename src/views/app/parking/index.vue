@@ -163,8 +163,8 @@
                             <el-dropdown-item command="handleDelAllSpace" icon="el-icon-delete-solid" v-permission="['app:space:remove']">
                                 删除所有车位
                             </el-dropdown-item>
-                            <el-dropdown-item command="handleAuthRole" icon="el-icon-s-grid" v-permission="['app:space:list']">
-                                操作车位
+                            <el-dropdown-item command="handleSpace" icon="el-icon-s-grid" v-permission="['app:space:list']">
+                                车位管理
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
@@ -372,8 +372,8 @@ export default {
                 case 'handleDelAllSpace':
                     this.handleDelAllSpace(row);
                     break;
-                case 'handleAuthRole':
-                    this.handleAuthRole(row);
+                case 'handleSpace':
+                    this.handleSpace(row);
                     break;
                 default:
                     break;
@@ -392,10 +392,9 @@ export default {
                 })
                 .catch(() => {});
         },
-        // 分配角色
-        handleAuthRole: function (row) {
-            const userId = row.id;
-            this.$router.push('/system/user-auth/role/' + userId);
+        // 车位管理
+        handleSpace: function (row) {
+            this.$router.push('/app/space/' + row.id);
         },
     },
 };

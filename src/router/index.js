@@ -105,6 +105,19 @@ export const constantRoutes = [{
       }
     }]
   },
+  {
+    path: '/app/space',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: ':parkingId(\\d+)',
+      component: (resolve) => require(['@/views/app/space/index'], resolve),
+      name: 'Space',
+      meta: {
+        title: '车位操作'
+      }
+    }]
+  },
 ]
 
 export default new Router({
