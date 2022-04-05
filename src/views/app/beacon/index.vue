@@ -1,5 +1,69 @@
 <template>
     <div class="app-container">
+        <el-form :model="queryParams" ref="queryForm" v-show="showSearch" label-width="90px">
+            <el-row>
+                <el-col :span="5">
+                    <el-form-item label="物理地址" prop="mac">
+                        <el-input
+                            v-model="queryParams.mac"
+                            placeholder="请输入物理地址"
+                            clearable
+                            size="small"
+                            @keyup.enter.native="handleQuery"
+                        />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="5">
+                    <el-form-item label="uuid" prop="uuid">
+                        <el-input
+                            v-model="queryParams.priceStandard"
+                            placeholder="请输入uuid"
+                            clearable
+                            size="small"
+                            @keyup.enter.native="handleQuery"
+                        />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-form-item label="主要标识" prop="major">
+                        <el-input
+                            v-model.number="queryParams.major"
+                            placeholder="输入主要标识"
+                            clearable
+                            size="small"
+                            @keyup.enter.native="handleQuery"
+                        />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-form-item label="次要标识" prop="minor">
+                        <el-input
+                            v-model.number="queryParams.minor"
+                            placeholder="输入次要标识"
+                            clearable
+                            size="small"
+                            @keyup.enter.native="handleQuery"
+                        />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                    <el-form-item>
+                        <el-button
+                            type="primary"
+                            icon="el-icon-search"
+                            size="mini"
+                            @click="handleQuery"
+                        >
+                            搜索
+                        </el-button>
+                        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">
+                            重置
+                        </el-button>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        </el-form>
+
         <el-row :gutter="10" class="mb8">
             <el-col :span="1.5">
                 <el-button
@@ -7,7 +71,7 @@
                     plain
                     icon="el-icon-plus"
                     size="mini"
-                    v-permission="['app:space:add']"
+                    v-permission="['app:beacon:add']"
                     @click="handleAdd"
                 >
                     新增
@@ -21,7 +85,7 @@
                     size="mini"
                     :disabled="single"
                     @click="handleUpdate"
-                    v-permission="['app:space:edit']"
+                    v-permission="['app:beacon:edit']"
                 >
                     修改
                 </el-button>
@@ -34,28 +98,48 @@
                     size="mini"
                     :disabled="multiple"
                     @click="handleDelete"
-                    v-permission="['app:space:remove']"
+                    v-permission="['app:beacon:remove']"
                 >
                     删除
                 </el-button>
             </el-col>
+            <right-toolbar
+                :showSearch.sync="showSearch"
+                @queryTable="getList"
+                :columns="columns"
+            ></right-toolbar>
         </el-row>
 
-        <el-table v-loading="loading" :data="spaceList" @selection-change="handleSelectionChange">
+        <el-table v-loading="loading" :data="beaconList" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50" align="center" />
             <el-table-column
-                label="车位编号"
+                label="物理地址"
                 align="center"
-                key="id"
-                prop="id"
+                key="mac"
+                prop="mac"
                 v-if="columns[0].visible"
             />
             <el-table-column
-                label="车牌号"
+                label="uuid"
                 align="center"
-                key="carId"
-                prop="carId"
+                key="uuid"
+                prop="uuid"
+                :show-overflow-tooltip="true"
                 v-if="columns[1].visible"
+            />
+            <el-table-column
+                label="主要标识"
+                align="center"
+                key="major"
+                prop="major"
+                v-if="columns[2].visible"
+            />
+            <el-table-column
+                label="次要标识"
+                align="center"
+                key="minor"
+                prop="minor"
+                v-if="columns[3].visible"
             />
             <el-table-column
                 label="x坐标"
@@ -63,7 +147,7 @@
                 key="x"
                 prop="x"
                 sortable
-                v-if="columns[2].visible"
+                v-if="columns[4].visible"
             />
             <el-table-column
                 label="y坐标"
@@ -71,24 +155,13 @@
                 key="y"
                 prop="y"
                 sortable
-                v-if="columns[3].visible"
+                v-if="columns[5].visible"
             />
-            <el-table-column
-                label="车位状态"
-                align="center"
-                key="available"
-                v-if="columns[4].visible"
-            >
-                <template slot-scope="scope">
-                    <el-tag type="success" v-if="scope.row.available === 1">可用</el-tag>
-                    <el-tag type="danger" v-else>不可用</el-tag>
-                </template>
-            </el-table-column>
             <el-table-column
                 label="创建时间"
                 align="center"
                 prop="createTime"
-                v-if="columns[5].visible"
+                v-if="columns[6].visible"
                 width="170"
             />
             <el-table-column
@@ -103,7 +176,7 @@
                         type="text"
                         icon="el-icon-edit"
                         @click="handleUpdate(scope.row)"
-                        v-permission="['app:space:edit']"
+                        v-permission="['app:beacon:edit']"
                     >
                         修改
                     </el-button>
@@ -112,7 +185,7 @@
                         type="text"
                         icon="el-icon-delete"
                         @click="handleDelete(scope.row)"
-                        v-permission="['app:space:remove']"
+                        v-permission="['app:beacon:remove']"
                     >
                         删除
                     </el-button>
@@ -128,7 +201,7 @@
             @pagination="getList"
         />
 
-        <!-- 添加或修改停车位配置对话框 -->
+        <!-- 添加或修改信标配置对话框 -->
         <el-dialog
             :title="title"
             :visible.sync="open"
@@ -136,10 +209,25 @@
             width="600px"
             append-to-body
         >
-            <el-form ref="form" :model="form" status-icon :rules="rules" label-width="100px">
-                <el-form-item v-show="form.id !== undefined" label="车牌号" prop="carId">
-                    <el-input v-model="form.carId" placeholder="请输入车牌号" maxlength="30" />
+            <el-form ref="form" :model="form" status-icon :rules="rules" label-width="80px">
+                <el-form-item label="物理地址" prop="mac">
+                    <el-input v-model="form.mac" placeholder="请输入物理地址" />
                 </el-form-item>
+                <el-form-item label="uuid" prop="uuid">
+                    <el-input v-model="form.uuid" placeholder="请输入uuid" />
+                </el-form-item>
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="主要标识" prop="major">
+                            <el-input v-model.number="form.major" placeholder="请输入主要标识" />
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="次要标识" prop="minor">
+                            <el-input v-model.number="form.minor" placeholder="请输入次要标识" />
+                        </el-form-item>
+                    </el-col>
+                </el-row>
                 <el-row>
                     <el-col :span="12">
                         <el-form-item label="x坐标" prop="x">
@@ -152,12 +240,6 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-form-item v-show="form.id !== undefined" label="车位状态">
-                    <el-radio-group v-model="form.available">
-                        <el-radio :label="1">可用</el-radio>
-                        <el-radio :label="0">不可用</el-radio>
-                    </el-radio-group>
-                </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -167,13 +249,15 @@
     </div>
 </template>
 <script>
-import { listSpace, add, getSpace, update, del } from '@/api/app/space';
+import { listBeacon, add, getBeacon, update, del } from '@/api/app/beacon';
 export default {
-    name: 'Parking',
+    name: 'Beacon',
     data() {
         return {
             //停车场编号
             parkingId: 0,
+            // 显示搜索条件
+            showSearch: true,
             // 遮罩层
             loading: true,
             // 选中数组
@@ -184,8 +268,8 @@ export default {
             multiple: true,
             // 总条数
             total: 0,
-            // 停车场表格数据
-            spaceList: null,
+            // 信标表格数据
+            beaconList: null,
             // 弹出层标题
             title: '',
             // 是否显示弹出层
@@ -194,21 +278,26 @@ export default {
             form: {},
             // 列信息
             columns: [
-                { key: 0, label: `车位编号`, visible: true },
-                { key: 1, label: `车牌号`, visible: true },
-                { key: 2, label: `x坐标`, visible: true },
-                { key: 3, label: `y坐标`, visible: true },
-                { key: 4, label: `车位状态`, visible: true },
-                { key: 5, label: `创建时间`, visible: true },
+                { key: 0, label: `物理地址`, visible: true },
+                { key: 1, label: `uuid`, visible: true },
+                { key: 2, label: `主要标识`, visible: true },
+                { key: 3, label: `次要标识`, visible: true },
+                { key: 4, label: `x坐标`, visible: true },
+                { key: 5, label: `y坐标`, visible: true },
+                { key: 6, label: `创建时间`, visible: true },
             ],
             // 查询参数
             queryParams: {
                 pageNum: 1,
                 pageSize: 10,
-                parkingId: 0,
+                mac: undefined,
+                uuid: undefined,
+                major: undefined,
+                minor: undefined,
             },
             // 表单校验
             rules: {
+                mac: [{ required: true, message: '物理地址不能为空', trigger: 'blur' }],
                 x: [{ required: true, message: 'x坐标不能为空', trigger: 'blur' }],
                 y: [{ required: true, message: 'y坐标不能为空', trigger: 'blur' }],
             },
@@ -219,12 +308,12 @@ export default {
         this.getList();
     },
     methods: {
-        // 查找车位列表
+        // 查找信标列表
         getList() {
             this.loading = true;
-            this.queryParams.parkingId = this.parkingId;
-            listSpace(this.queryParams).then(res => {
-                this.spaceList = res.rows;
+            this.queryParams.parkingLotId = this.parkingId;
+            listBeacon(this.queryParams).then(res => {
+                this.beaconList = res.rows;
                 this.total = res.total;
                 this.loading = false;
             });
@@ -233,15 +322,15 @@ export default {
         handleAdd() {
             this.reset();
             this.open = true;
-            this.title = '添加车位';
+            this.title = '添加信标';
         },
         // 修改按钮操作
         handleUpdate(row) {
             this.reset();
-            getSpace(row.id || this.ids).then(response => {
+            getBeacon(row.id || this.ids).then(response => {
                 this.form = response;
                 this.open = true;
-                this.title = '修改车位';
+                this.title = '修改信标';
             });
         },
         // 提交按钮操作
@@ -267,7 +356,7 @@ export default {
         // 删除按钮操作
         handleDelete(row) {
             this.$modal
-                .confirm('是否确认删除车位编号为' + (row.id || this.ids) + '的数据项？')
+                .confirm('是否确认删除信标编号为' + (row.id || this.ids) + '的数据项？')
                 .then(() => {
                     return del(row.id || this.ids);
                 })
@@ -297,26 +386,21 @@ export default {
         reset() {
             this.form = {
                 id: undefined,
+                mac: undefined,
+                uuid: undefined,
+                major: undefined,
+                minor: undefined,
                 parkingLotId: this.parkingId,
-                carId: undefined,
                 x: undefined,
                 y: undefined,
                 available: 1,
             };
             this.resetForm('form');
         },
-        // 更多操作
-        handleCommand(command, row) {
-            switch (command) {
-                case 'handleDelAllSpace':
-                    this.handleDelAllSpace(row);
-                    break;
-                case 'handleSpace':
-                    this.handleSpace(row);
-                    break;
-                default:
-                    break;
-            }
+        // 重置按钮操作
+        resetQuery() {
+            this.resetForm('queryForm');
+            this.handleQuery();
         },
     },
 };

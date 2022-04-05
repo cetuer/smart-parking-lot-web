@@ -114,7 +114,20 @@ export const constantRoutes = [{
       component: (resolve) => require(['@/views/app/space/index'], resolve),
       name: 'Space',
       meta: {
-        title: '车位操作'
+        title: '车位管理'
+      }
+    }]
+  },
+  {
+    path: '/app/beacon',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: ':parkingId(\\d+)',
+      component: (resolve) => require(['@/views/app/beacon/index'], resolve),
+      name: 'Beacon',
+      meta: {
+        title: '信标管理'
       }
     }]
   },

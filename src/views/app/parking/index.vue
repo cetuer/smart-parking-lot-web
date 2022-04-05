@@ -111,19 +111,27 @@
                 v-if="columns[5].visible"
             />
             <el-table-column
+                label="信标数量"
+                align="center"
+                key="beaconCount"
+                prop="beaconCount"
+                sortable
+                v-if="columns[6].visible"
+            />
+            <el-table-column
                 label="收费标准(元/小时)"
                 align="center"
                 key="priceStandard"
                 prop="priceStandard"
                 width="160px"
                 sortable
-                v-if="columns[6].visible"
+                v-if="columns[7].visible"
             />
             <el-table-column
                 label="创建时间"
                 align="center"
                 prop="createTime"
-                v-if="columns[7].visible"
+                v-if="columns[8].visible"
                 width="170"
             />
             <el-table-column
@@ -160,11 +168,33 @@
                             更多
                         </span>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item command="handleDelAllSpace" icon="el-icon-delete-solid" v-permission="['app:space:remove']">
-                                删除所有车位
+                            <el-dropdown-item
+                                command="handleDelAllSpace"
+                                icon="el-icon-delete-solid"
+                                v-permission="['app:space:remove']"
+                            >
+                                清空车位
                             </el-dropdown-item>
-                            <el-dropdown-item command="handleSpace" icon="el-icon-s-grid" v-permission="['app:space:list']">
+                            <el-dropdown-item
+                                command="handleDelAllBeacon"
+                                icon="el-icon-delete-solid"
+                                v-permission="['app:space:remove']"
+                            >
+                                清空信标
+                            </el-dropdown-item>
+                            <el-dropdown-item
+                                command="handleSpace"
+                                icon="el-icon-s-grid"
+                                v-permission="['app:space:list']"
+                            >
                                 车位管理
+                            </el-dropdown-item>
+                            <el-dropdown-item
+                                command="handleBeacon"
+                                icon="el-icon-cpu"
+                                v-permission="['app:beacon:list']"
+                            >
+                                信标管理
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
@@ -231,7 +261,8 @@
 </template>
 <script>
 import { listParking, add, getParking, update, del } from '@/api/app/parking';
-import {delAll} from '@/api/app/space';
+import { delAll } from '@/api/app/space';
+import { delAll as delAllBeacon } from '@/api/app/beacon';
 export default {
     name: 'Parking',
     data() {
@@ -258,8 +289,9 @@ export default {
                 { key: 3, label: `纬度`, visible: true },
                 { key: 4, label: `车位总数`, visible: true },
                 { key: 5, label: `空余车位`, visible: true },
-                { key: 6, label: `收费标准`, visible: true },
-                { key: 7, label: `创建时间`, visible: true },
+                { key: 6, label: `信标数量`, visible: true },
+                { key: 7, label: `收费标准`, visible: true },
+                { key: 8, label: `创建时间`, visible: true },
             ],
             // 查询参数
             queryParams: {
@@ -372,8 +404,14 @@ export default {
                 case 'handleDelAllSpace':
                     this.handleDelAllSpace(row);
                     break;
+                case 'handleDelAllBeacon':
+                    this.handleDelAllBeacon(row);
+                    break;
                 case 'handleSpace':
                     this.handleSpace(row);
+                    break;
+                case 'handleBeacon':
+                    this.handleBeacon(row);
                     break;
                 default:
                     break;
@@ -392,9 +430,26 @@ export default {
                 })
                 .catch(() => {});
         },
+        // 删除此停车场所有信标
+        handleDelAllBeacon(row) {
+            this.$modal
+                .confirm('是否确认删除此停车场所有信标？请谨慎操作！')
+                .then(() => {
+                    return delAllBeacon(row.id);
+                })
+                .then(() => {
+                    this.getList();
+                    this.$modal.msgSuccess('删除成功');
+                })
+                .catch(() => {});
+        },
         // 车位管理
         handleSpace: function (row) {
             this.$router.push('/app/space/' + row.id);
+        },
+        // 信标管理
+        handleBeacon: function (row) {
+            this.$router.push('/app/beacon/' + row.id);
         },
     },
 };
