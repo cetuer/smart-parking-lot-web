@@ -113,11 +113,19 @@
         <el-table v-loading="loading" :data="beaconList" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50" align="center" />
             <el-table-column
+                label="信标编号"
+                align="center"
+                key="id"
+                prop="id"
+                v-if="columns[0].visible"
+            />
+            <el-table-column
                 label="物理地址"
                 align="center"
                 key="mac"
                 prop="mac"
-                v-if="columns[0].visible"
+                :show-overflow-tooltip="true"
+                v-if="columns[1].visible"
             />
             <el-table-column
                 label="uuid"
@@ -125,21 +133,21 @@
                 key="uuid"
                 prop="uuid"
                 :show-overflow-tooltip="true"
-                v-if="columns[1].visible"
+                v-if="columns[2].visible"
             />
             <el-table-column
                 label="主要标识"
                 align="center"
                 key="major"
                 prop="major"
-                v-if="columns[2].visible"
+                v-if="columns[3].visible"
             />
             <el-table-column
                 label="次要标识"
                 align="center"
                 key="minor"
                 prop="minor"
-                v-if="columns[3].visible"
+                v-if="columns[4].visible"
             />
             <el-table-column
                 label="x坐标"
@@ -147,7 +155,7 @@
                 key="x"
                 prop="x"
                 sortable
-                v-if="columns[4].visible"
+                v-if="columns[5].visible"
             />
             <el-table-column
                 label="y坐标"
@@ -155,13 +163,13 @@
                 key="y"
                 prop="y"
                 sortable
-                v-if="columns[5].visible"
+                v-if="columns[6].visible"
             />
             <el-table-column
                 label="创建时间"
                 align="center"
                 prop="createTime"
-                v-if="columns[6].visible"
+                v-if="columns[7].visible"
                 width="170"
             />
             <el-table-column
@@ -210,6 +218,16 @@
             append-to-body
         >
             <el-form ref="form" :model="form" status-icon :rules="rules" label-width="80px">
+                <el-form-item label="停车场" prop="parkingLotId">
+                    <el-select v-model="form.parkingLotId" placeholder="请选择">
+                        <el-option
+                            v-for="item in parkingOptions"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id"
+                        ></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="物理地址" prop="mac">
                     <el-input v-model="form.mac" placeholder="请输入物理地址" />
                 </el-form-item>
@@ -219,24 +237,40 @@
                 <el-row>
                     <el-col :span="12">
                         <el-form-item label="主要标识" prop="major">
-                            <el-input v-model.number="form.major" placeholder="请输入主要标识" />
+                            <el-input
+                                v-model="form.major"
+                                oninput="value=value.replace(/[^\d]/g,'')"
+                                placeholder="请输入主要标识"
+                            />
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="次要标识" prop="minor">
-                            <el-input v-model.number="form.minor" placeholder="请输入次要标识" />
+                            <el-input
+                                v-model="form.minor"
+                                oninput="value=value.replace(/[^\d]/g,'')"
+                                placeholder="请输入次要标识"
+                            />
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="12">
                         <el-form-item label="x坐标" prop="x">
-                            <el-input v-model.number="form.x" placeholder="请输入x坐标" />
+                            <el-input
+                                v-model="form.x"
+                                oninput="value=value.replace(/[^\d]/g,'')"
+                                placeholder="请输入x坐标"
+                            />
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="y坐标" prop="y">
-                            <el-input v-model.number="form.y" placeholder="请输入y坐标" />
+                            <el-input
+                                v-model="form.y"
+                                oninput="value=value.replace(/[^\d]/g,'')"
+                                placeholder="请输入y坐标"
+                            />
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -249,6 +283,7 @@
     </div>
 </template>
 <script>
+import { list } from '@/api/app/parking';
 import { listBeacon, add, getBeacon, update, del } from '@/api/app/beacon';
 export default {
     name: 'Beacon',
@@ -274,17 +309,20 @@ export default {
             title: '',
             // 是否显示弹出层
             open: false,
+            // 停车场选项
+            parkingOptions: [],
             // 表单参数
             form: {},
             // 列信息
             columns: [
-                { key: 0, label: `物理地址`, visible: true },
-                { key: 1, label: `uuid`, visible: true },
-                { key: 2, label: `主要标识`, visible: true },
-                { key: 3, label: `次要标识`, visible: true },
-                { key: 4, label: `x坐标`, visible: true },
-                { key: 5, label: `y坐标`, visible: true },
-                { key: 6, label: `创建时间`, visible: true },
+                { key: 0, label: `信标编号`, visible: true },
+                { key: 1, label: `物理地址`, visible: true },
+                { key: 2, label: `uuid`, visible: true },
+                { key: 3, label: `主要标识`, visible: true },
+                { key: 4, label: `次要标识`, visible: true },
+                { key: 5, label: `x坐标`, visible: true },
+                { key: 6, label: `y坐标`, visible: true },
+                { key: 7, label: `创建时间`, visible: true },
             ],
             // 查询参数
             queryParams: {
@@ -297,6 +335,7 @@ export default {
             },
             // 表单校验
             rules: {
+                parkingLotId: [{ required: true, message: '停车场不能为空', trigger: 'blur' }],
                 mac: [{ required: true, message: '物理地址不能为空', trigger: 'blur' }],
                 x: [{ required: true, message: 'x坐标不能为空', trigger: 'blur' }],
                 y: [{ required: true, message: 'y坐标不能为空', trigger: 'blur' }],
@@ -321,12 +360,20 @@ export default {
         // 新增按钮操作
         handleAdd() {
             this.reset();
-            this.open = true;
-            this.title = '添加信标';
+            this.form.parkingLotId =
+                this.parkingId === undefined ? undefined : parseInt(this.parkingId);
+            list().then(response => {
+                this.parkingOptions = response;
+                this.open = true;
+                this.title = '添加信标';
+            });
         },
         // 修改按钮操作
         handleUpdate(row) {
             this.reset();
+            list().then(response => {
+                this.parkingOptions = response;
+            });
             getBeacon(row.id || this.ids).then(response => {
                 this.form = response;
                 this.open = true;
@@ -390,7 +437,7 @@ export default {
                 uuid: undefined,
                 major: undefined,
                 minor: undefined,
-                parkingLotId: this.parkingId,
+                parkingLotId: undefined,
                 x: undefined,
                 y: undefined,
                 available: 1,

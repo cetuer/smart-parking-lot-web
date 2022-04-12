@@ -445,11 +445,11 @@ export default {
         },
         // 车位管理
         handleSpace: function (row) {
-            this.$router.push('/app/space/' + row.id);
+            this.$router.push('/app/parking/space/' + row.id);
         },
         // 信标管理
         handleBeacon: function (row) {
-            this.$router.push('/app/beacon/' + row.id);
+            this.$router.push('/app/parking/beacon/' + row.id);
         },
     },
 };

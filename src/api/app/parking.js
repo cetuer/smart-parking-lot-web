@@ -1,11 +1,19 @@
 import request from "@/utils/request.js"
 
-// 获取所有停车场
+// 分页获取所有停车场
 export function listParking(query) {
   return request({
     url: '/parking-admin/parkingLot/listByPage',
     method: 'get',
     params: query
+  })
+}
+
+// 获取所有停车场
+export function list() {
+  return request({
+    url: '/parking-admin/parkingLot/list',
+    method: 'get',
   })
 }
 

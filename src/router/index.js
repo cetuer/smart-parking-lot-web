@@ -106,28 +106,30 @@ export const constantRoutes = [{
     }]
   },
   {
-    path: '/app/space',
+    path: '/app/parking/space',
     component: Layout,
     hidden: true,
     children: [{
       path: ':parkingId(\\d+)',
       component: (resolve) => require(['@/views/app/space/index'], resolve),
-      name: 'Space',
+      name: 'ParkingSpace',
       meta: {
-        title: '车位管理'
+        title: '车位管理',
+        activeMenu: '/app/space'
       }
     }]
   },
   {
-    path: '/app/beacon',
+    path: '/app/parking/beacon',
     component: Layout,
     hidden: true,
     children: [{
       path: ':parkingId(\\d+)',
       component: (resolve) => require(['@/views/app/beacon/index'], resolve),
-      name: 'Beacon',
+      name: 'ParkingBeacon',
       meta: {
-        title: '信标管理'
+        title: '信标管理',
+        activeMenu: '/app/beacon'
       }
     }]
   },

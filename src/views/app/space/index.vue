@@ -137,18 +137,36 @@
             append-to-body
         >
             <el-form ref="form" :model="form" status-icon :rules="rules" label-width="100px">
+                <el-form-item label="停车场" prop="parkingLotId">
+                    <el-select v-model="form.parkingLotId" placeholder="请选择">
+                        <el-option
+                            v-for="item in parkingOptions"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id"
+                        ></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item v-show="form.id !== undefined" label="车牌号" prop="carId">
                     <el-input v-model="form.carId" placeholder="请输入车牌号" maxlength="30" />
                 </el-form-item>
                 <el-row>
                     <el-col :span="12">
                         <el-form-item label="x坐标" prop="x">
-                            <el-input v-model.number="form.x" placeholder="请输入x坐标" />
+                            <el-input
+                                v-model="form.x"
+                                oninput="value=value.replace(/[^\d]/g,'')"
+                                placeholder="请输入x坐标"
+                            />
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="y坐标" prop="y">
-                            <el-input v-model.number="form.y" placeholder="请输入y坐标" />
+                            <el-input
+                                v-model="form.y"
+                                oninput="value=value.replace(/[^\d]/g,'')"
+                                placeholder="请输入y坐标"
+                            />
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -167,9 +185,10 @@
     </div>
 </template>
 <script>
+import { list } from '@/api/app/parking';
 import { listSpace, add, getSpace, update, del } from '@/api/app/space';
 export default {
-    name: 'Parking',
+    name: 'Space',
     data() {
         return {
             //停车场编号
@@ -192,6 +211,8 @@ export default {
             open: false,
             // 表单参数
             form: {},
+            // 停车场选项
+            parkingOptions: [],
             // 列信息
             columns: [
                 { key: 0, label: `车位编号`, visible: true },
@@ -209,6 +230,7 @@ export default {
             },
             // 表单校验
             rules: {
+                parkingLotId: [{ required: true, message: '停车场不能为空', trigger: 'blur' }],
                 x: [{ required: true, message: 'x坐标不能为空', trigger: 'blur' }],
                 y: [{ required: true, message: 'y坐标不能为空', trigger: 'blur' }],
             },
@@ -232,12 +254,19 @@ export default {
         // 新增按钮操作
         handleAdd() {
             this.reset();
-            this.open = true;
-            this.title = '添加车位';
+            this.form.parkingLotId = this.parkingId === undefined ? undefined : parseInt(this.parkingId);
+            list().then(response => {
+                this.parkingOptions = response;
+                this.open = true;
+                this.title = '添加车位';
+            });
         },
         // 修改按钮操作
         handleUpdate(row) {
             this.reset();
+            list().then(response => {
+                this.parkingOptions = response;
+            });
             getSpace(row.id || this.ids).then(response => {
                 this.form = response;
                 this.open = true;
@@ -297,7 +326,7 @@ export default {
         reset() {
             this.form = {
                 id: undefined,
-                parkingLotId: this.parkingId,
+                parkingLotId: undefined,
                 carId: undefined,
                 x: undefined,
                 y: undefined,
